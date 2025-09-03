@@ -1,2 +1,2 @@
 # cursorrules
-Shared rules for interacting with my projects.
+Shared rules for AI agents interacting with my projects.
