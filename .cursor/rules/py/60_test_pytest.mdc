@@ -1,5 +1,5 @@
 ---
-description: Guidelines for writing Python code in this workspace
+description: Guidelines for writing Pytest code
 globs: *test*.py,test/*
 alwaysApply: false
 ---

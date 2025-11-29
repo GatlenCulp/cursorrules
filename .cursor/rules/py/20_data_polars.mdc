@@ -4,9 +4,7 @@ globs: *.py,*.ipynb
 alwaysApply: false
 ---
 
-# Data Manipulation with Polars
-
-Polars is recommended for dataframe operations as it offers:
+[Polars](https://docs.pola.rs/api/python/stable/reference/) is recommended for dataframe operations as it offers:
 
 - Faster performance than pandas
 - Cleaner syntax

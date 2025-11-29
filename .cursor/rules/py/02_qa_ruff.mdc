@@ -1,11 +1,8 @@
 ---
-description: 
+description: Essential QA tools for maintaining high-quality Python code in this workspace.
 globs: *.py,*.ipynb
 alwaysApply: false
 ---
-# Python Quality Assurance Tools
-
-Essential QA tools for maintaining high-quality Python code in this workspace.
 
 ## 01 Standard Commands
 

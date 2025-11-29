@@ -1,9 +1,4 @@
----
-description: 
-globs: .cursor/notes/*.md
-alwaysApply: false
----
-# (Cursor Rule 102) Agent Note Taking
+# Take Notes
 
 Agentic AI note taking is an experimental technique for the user to learn content. Instead of reading sequentially through a textbook or notes, the user will iteratively interact with an AI agent to build their understanding, and in the process, building a document explaining the topic and their thought process. The AI is acting as a sort of teacher.
 

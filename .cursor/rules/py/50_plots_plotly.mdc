@@ -1,6 +1,6 @@
 ---
 description: Best practices for data visualization with Plotly
-globs: *.py,*.ipynb
+globs: *.py,*.ipynb,plot*
 alwaysApply: false
 ---
 

@@ -3,11 +3,6 @@ description: Guidelines for using Git and GitHub in this project
 globs: *.git*
 alwaysApply: true
 ---
-
-# Version Control
-
-This project uses **Git** for version control with repositories hosted on **GitHub**.
-
 ## Git Best Practices
 
 - Use `git mv <src> <dst>` for renaming or moving files to preserve history

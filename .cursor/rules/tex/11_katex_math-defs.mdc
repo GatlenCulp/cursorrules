@@ -1,10 +1,9 @@
 ---
-description: Guidelines for LaTeX usage and best practices
+description: Guidelines for Writing Math Definitions
 globs: *.tex,*.md
 alwaysApply: false
 ---
 
-# Guidelines for Writing Math Definitions
 \( \newcommand{\defin}{\mathrel{:}\in} \)
 
 ## Structure

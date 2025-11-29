@@ -1,5 +1,5 @@
 ---
-description: Guidelines for writing Python code in this workspace
+description: Guidelines for writing ML-related code.
 globs: *.py,*.ipynb
 alwaysApply: false
 ---
@@ -26,19 +26,6 @@ ai-train = [
     "nnsight>=0.3.7",           # Neural network interpretation tools
 ]
 ```
-
-## Package Selection Guide
-
-- **PyTorch-Lightning**: Use over raw PyTorch to reduce boilerplate
-- **EinOps**: For cleaner tensor operations (replaces complex reshapes/transposes)
-- **Safetensors**: For secure model + data saving/loading
-- **Transformers/Datasets**: For HuggingFace model and dataset access
-- **UMAP**: For dimensionality reduction and visualization
-- **Weights & Biases**: For experiment tracking and visualization
-- **ONNX**: For final model export and cross-platform deployment
-- **Ray[Tune]**: For hyperparameter optimization
-- **Scikit-Learn**: For traditional ML algorithms and preprocessing
-- **JaxTyping**: For typing tensor operations
 
 ## EinOps Examples
 

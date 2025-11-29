@@ -14,7 +14,7 @@ alwaysApply: false
 
 ## Typing
 
-- Python 3.9 syntax: `Union[Type1, Type2]` not `Type1 | Type2`; `Optional[Type]` not `Type | None`
+- Python 3.10+ syntax: `Type1 | Type2` not `Union[Type1, Type2]` ; `Type | None` not `Optional[Type]`
 - Type annotations for all functions, parameters, and return values
 - Add type annotations when initializing empty iterables/variables as None
 - Avoid `Any` when possible; create `typevar`s if needed

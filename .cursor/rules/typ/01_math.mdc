@@ -1,0 +1,66 @@
+---
+globs: *.typ
+description: Instructions for how to properly write math
+alwaysApply: false
+---
+- I'm using the Typst package `physica` for extra utilities. 
+- Use semantic symbols/variables instead of generic ones (e.g. `grad` not `nabla`, `product` not `Pi`, `evaluated(dot)_(x=0)` not `dot |_(x=0)`, `iprod(x, y)` not `angle.l x, y angle.r`, `norm(dot)` not `||dot||`, `abs(dot)` not `|dot|`, `Set(dot)` not `{dot}`, etc.), but use `oo` instead of `infinity`. Use `dd(x)` for differentials. Use `dv(f,x)` or `pdv(f,x)` for derivatives and partial derivatives respectively.
+- Use `vb(x)` for vector bold, `cal(A)` for mathcal letters, etc. 
+- Beware of using {sub, super}scripts with functions, be sure to place spaces: `V_pi (s)` not `V_pi(s)`.
+- Disambiguate `=` -- use `<-` for assignment, `:=` for definition, `=` for booleans.
+- Disambiguate `in` -- use `:in` for definition, `in` for booleans
+- For probability use `Pr(x | y)`, `Ex(x | y)`, and `"Var"(X)`
+- Prefer interval notation (`p in [0, 1]`) over inequalities (`0 <= p <= 1`) where appropriate.
+- For every generated figure, header, equation, table, etc. add a label with the proper prefix: `<sec:name>`, `<fig:name>`, `<eq:name>`, `<tab:name>`, etc.
+- When referencing labeled items in text, use `@sec:name`, `@fig:name`, `@eq:name`, etc.
+
+// TODO: [typst-template] Standardize RV notation in my notes. Distributed according to, RV, domain, etc.
+// TODO: [typst-template] Add my notes from my prompt templates such as with capitalizations and styles.
+// TODO: [typst-template] Parameter assignment operator in functions (e.g. $f(x=x_0)$)
+
+
+Make efforts to make the math source code more readable with line breaks and indents as you would do with syntax for another language. For showing work with short equations, use `&` for alignment, for longer ones where line breaks are necessary within an expression, omit the alignment character and place an extra line break between equations. Use `=` (equals) to update an expression and `=>` (implies) to update an equation. Example of a long one:
+```typst
+Solving:
+$
+  evaluated(grad_Delta V(theta + Delta))_(Delta = 0)
+  = evaluated(
+    EE_(tau ~ P) [
+      R(tau)/(product_(t) pi_(theta) (a_t | s_t))
+      sum_(t=0)^oo [
+        grad_Delta pi_(theta + Delta) (a_t | s_t)
+        product_(t' != t) (pi_(theta + Delta) (a_t' | s_t'))
+      ]
+    ]
+  )_(Delta = 0) \
+  \
+  = EE_(tau ~ P) [
+    R(tau)/(product_(t) pi_(theta) (a_t | s_t))
+    sum_(t=0)^oo [
+      ( grad_theta pi_(theta) (a_t | s_t))
+      product_(t' != t) (pi_(theta) (a_t' | s_t'))
+    ]
+  ]
+  \
+  \ "Make prod independent of t and factor it out" \
+  = EE_(tau ~ P) [
+    R(tau)/(product_(t) pi_(theta) (a_t | s_t))
+    sum_(t=0)^oo [
+      (grad_theta pi_(theta) (a_t | s_t))
+      (product_(t') (pi_(theta) (a_t' | s_t'))) / (pi_(theta) (a_t | s_t))
+    ]
+  ]
+  \ ...
+$
+```
+
+Common typst mistakes: Typst is NOT LaTeX.
+- don't use `begin` or `end` environments.
+- `\` and a space or new line registers as a new line in typst. Don't use `\\` as that just escapes a back slash.
+- There is no need to use `\` in typst math. E.g. `abs` not `\abs`, `alpha` not `\alpha`, `Delta` not `\Delta`, `quad` not `\quad`, etc.
+- In typst, `{}` is not used group symbols the way it is in LaTeX. Instead `()` are used. E.g. `x_(i j)` not `x_{ij}` (a space must be included otherwise `ij` will try to reference a math symbol that doesn't exist.)
+- Unless its either 1-character, a number, or a function/symbol in typst there must be double quotes. E.g. `f_ext` will not work because `ext` is not a typst symbol. Instead use `f_"ext"` As another example: `$J_(reflected) := N^2 J_(load)$, $b_(reflected) := N^2 b_(load)$` will not work because "reflected" and "load" are not math symbols, instead use `$J_"reflected" := N^2 J_"load"$, $b_"reflected" := N^2 b_"load"$`
+- For text in an equation, use `"my text here"` instead of `\text{my text here}`. For example: use ` d_"min" (q)` not `$ d_\text{min}(q) $`
+- Don't use `\,` or `\;` for spacing, only `quad`. Typst does a good job of automatic spacing. Similarly don't use `\big` or related commands -- typst automatically handles sizing.
+- For monogram notation specifically, please use `attach`, e.g. `attach(p, tl: C, tr: s_i)`. (Don't use the LaTeX `{}^W X^C` syntax)
+- To make block math, make sure there is white space between the `$` and the math (line break or space). For example: `$ attach(X, tl: A, tr: B) $` is a block but `$attach(X, tl: A, tr: B)$` is inline.

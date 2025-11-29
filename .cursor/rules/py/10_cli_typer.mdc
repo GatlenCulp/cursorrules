@@ -1,5 +1,5 @@
 ---
-description: Guidelines for writing Python code in this workspace
+description: Guidelines for writing Command Line Interfaces with Python's Typer
 globs: *.py,*ipynb,*cli*
 alwaysApply: false
 ---

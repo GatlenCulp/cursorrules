@@ -1,0 +1,3 @@
+# Use this to actively disable rules, commands, etc.
+
+rules/gotem/*

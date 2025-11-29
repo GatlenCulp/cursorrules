@@ -1,5 +1,5 @@
 ---
-description: Guidelines for LaTeX usage and best practices
+description: Guidelines for Solving Math Problems using KaTeX
 globs: *.tex,*.md
 alwaysApply: false
 ---

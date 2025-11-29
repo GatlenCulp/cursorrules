@@ -1,0 +1,157 @@
+---
+description: Best practices for designing and running computational experiments in Python
+globs: *.py,*.ipynb
+alwaysApply: false
+---
+
+# Experiment Design Best Practices
+
+## 01 Core Principles
+
+- ALWAYS define experiments using Pydantic models for type safety
+- ALWAYS separate config generation from experiment execution
+- ALWAYS track all hyperparameters, runtime, and full inputs
+- PREFER async runners for I/O-bound tasks (API calls, file ops)
+- NEVER hardcode experiment parameters in execution functions
+
+## 02 Models
+
+```python
+from __future__ import annotations
+from datetime import datetime
+from typing import Annotated, Any, Literal
+from pydantic import BaseModel, Field
+
+class ExperimentConfig(BaseModel):
+    """All parameters needed to reproduce an experiment."""
+    model_name: Annotated[Literal["gpt2", "llama-3.2-1b"], Field(description="Model ID")]
+    temperature: Annotated[float, Field(ge=0, le=2, description="Sampling temperature")] = 1.0
+    concept: Annotated[str, Field(min_length=1, description="Task identifier")]
+    prompt: Annotated[str, Field(description="Full instantiated prompt")]
+    sampler: Annotated[Literal["baseline", "experimental"], Field(...)] = "baseline"
+    
+    @property
+    def experiment_id(self) -> str:
+        return f"{self.model_name}_{self.concept}_{self.sampler}"
+
+class ExperimentResults(BaseModel):
+    """Complete results with config for reproducibility."""
+    config: Annotated[ExperimentConfig, Field(description="Experiment config")]
+    outputs: Annotated[list[str], Field(description="Generated outputs")]
+    accuracy: Annotated[float, Field(ge=0, le=1)]
+    runtime_seconds: Annotated[float, Field(ge=0)]
+    timestamp: Annotated[datetime, Field(default_factory=datetime.utcnow)]
+    logs: Annotated[dict[str, Any], Field(default_factory=dict)]
+```
+
+## 03 Execution Pattern
+
+```python
+import asyncio, time
+from pathlib import Path
+from loguru import logger
+
+# Generate all configs upfront using cartesian product
+configs = [
+    ExperimentConfig(
+        model_name=model, temperature=temp, concept=concept,
+        prompt=get_prompt(concept), sampler=sampler,
+    )
+    for concept in CONCEPTS
+    for temp in [0.6, 0.8, 1.0]
+    for sampler in ["baseline", "experimental"]  # Run in pairs
+    for model in ["gpt2", "llama-3.2-1b"]
+]
+print(f"Running {len(configs)} experiments")  # Total is explicit
+
+async def run_experiment(config: ExperimentConfig) -> ExperimentResults:
+    """Run single experiment - should be pure given config."""
+    start = time.perf_counter()
+    model = load_model(config.model_name, temperature=config.temperature)
+    outputs = await model.generate(config.prompt, sampler=config.sampler)
+    metrics = evaluate(outputs)
+    return ExperimentResults(
+        config=config, outputs=outputs,
+        accuracy=metrics["accuracy"],
+        runtime_seconds=time.perf_counter() - start,
+    )
+
+async def run_all(configs: list[ExperimentConfig], output_dir: Path) -> list[ExperimentResults]:
+    """Run all experiments with concurrency control."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    semaphore = asyncio.Semaphore(5)
+    
+    async def run_one(cfg: ExperimentConfig) -> ExperimentResults:
+        async with semaphore:
+            logger.info(f"Starting: {cfg.experiment_id}")
+            result = await run_experiment(cfg)
+            # Save incrementally
+            (output_dir / f"{result.config.experiment_id}.json").write_text(
+                result.model_dump_json(indent=2)
+            )
+            return result
+    
+    return await asyncio.gather(*[run_one(c) for c in configs])
+```
+
+## 04 I/O and Analysis
+
+```python
+from pathlib import Path
+import polars as pl
+
+def save_results(results: ExperimentResults, path: Path | None = None) -> Path:
+    if path is None:
+        path = DEFAULT_DIR / f"{results.experiment_id}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(results.model_dump_json(indent=2), encoding="utf-8")
+    return path
+
+def load_results(path: Path) -> ExperimentResults:
+    return ExperimentResults.model_validate_json(path.read_text(encoding="utf-8"))
+
+def load_all(results_dir: Path) -> list[ExperimentResults]:
+    return [load_results(p) for p in sorted(results_dir.glob("*.json"))]
+
+def to_dataframe(results: list[ExperimentResults]) -> pl.DataFrame:
+    """Flatten for analysis."""
+    return pl.DataFrame([
+        {
+            "model": r.config.model_name, "temp": r.config.temperature,
+            "concept": r.config.concept, "sampler": r.config.sampler,
+            "accuracy": r.accuracy, "runtime": r.runtime_seconds,
+        } for r in results
+    ])
+
+# Analysis
+df = to_dataframe(results)
+comparison = df.group_by(["concept", "sampler"]).agg([
+    pl.col("accuracy").mean().alias("mean_acc"),
+    pl.col("runtime").mean().alias("mean_time"),
+])
+```
+
+## 05 Best Practices
+
+**What to Track:**
+- ALL hyperparameters (even seemingly irrelevant ones)
+- Runtime, timestamp, random seeds
+- Full prompts/inputs (not templates)
+- Software/hardware versions
+
+**Reproducibility:**
+- Save full config with each result (not just reference)
+- Use Pydantic for schema enforcement
+- Include git commit hash when saving
+
+**Organization:**
+- One config = one experiment = one result file
+- File naming: `{experiment_id}_{timestamp}.json`
+- Group runs in timestamped dirs: `data/experiments/run_2024_11_16/`
+- Version control code, not results
+
+**Execution:**
+- Generate configs upfront (easier to count/inspect)
+- Use async for I/O-bound work
+- Save incrementally (don't lose partial results)
+- Implement retry logic for flaky operations

@@ -1,0 +1,7 @@
+---
+description: General project description
+globs: 
+alwaysApply: true
+---
+# Cursor Rules for {{ cookiecutter.repo_name }}
+

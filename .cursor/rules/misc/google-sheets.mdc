@@ -3,9 +3,7 @@ description: How to provide assistance with Google Sheets requests
 globs: 
 alwaysApply: false
 ---
-# Google Sheets Problem-Solving Assistant Guidelines
-
-As an AI assistant specializing in Google Sheets, follow these best practices when helping users solve problems:
+<!-- TODO: Fix -->
 
 ## 1. User Interaction and GUI Navigation
 

@@ -1,12 +1,9 @@
 ---
-description: 
-globs: *.md
+description: Markdown Preview enhanced is a vscode extension for working on Markdown Files and has a few extra features.
 alwaysApply: false
 ---
 {% raw %}
 # Markdown Preview Enhanced Features with Examples
-
-Markdown Preview enhanced is a vscode extension for working on Markdown Files and has a few extra features. Read about them here
 
 https://shd101wyy.github.io/crossnote/
 

@@ -1,0 +1,248 @@
+---
+description: 
+globs: *.py,*.ipynb
+alwaysApply: false
+---
+# Pydantic Model Best Practices
+
+**Note**: This guide uses Pydantic v2 with the preferred `Annotated` syntax. Always use `from __future__ import annotations` for cleaner type hints.
+
+## 01 Core Principles
+
+### 01.00 Field Design
+- ALWAYS use `Annotated[Type, Field(...)]` syntax (Pydantic v2 preferred style)
+- ALWAYS provide a default value unless the field is truly required (use `...` for required fields)
+- ALWAYS include a description for self-documenting schemas
+- ALWAYS constrain fields as much as possible to catch errors early
+- ALWAYS use the most specific type possible (e.g., `PositiveInt` over `int`)
+- ALWAYS prefer built-in Pydantic types over custom validation
+- NEVER start field names with underscore (e.g., NO `_github_username: str`)
+- NEVER override existing model methods unless specifically intended
+- PREFER fields over methods for data representation
+- Use `repr=False` for fields that shouldn't appear in string representation
+
+### 01.01 Built-in Types
+```python
+from __future__ import annotations
+
+from datetime import date, datetime, timedelta
+from decimal import Decimal
+from typing import Annotated
+from uuid import UUID
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    HttpUrl,
+    IPvAnyAddress,
+    NegativeFloat,
+    NonNegativeInt,
+    NonPositiveFloat,
+    PositiveFloat,
+    PositiveInt,
+    PostgresDsn,
+    SecretStr,
+)
+
+class Example(BaseModel):
+    """Example using Annotated syntax for field definitions."""
+    
+    # Use built-in types instead of custom validation
+    email: Annotated[EmailStr, Field(description="User email")]
+    password: Annotated[SecretStr, Field(description="User password", repr=False)]
+    website: Annotated[HttpUrl | None, Field(default=None, description="Website URL")]
+    db_url: Annotated[PostgresDsn, Field(description="Database URL")]
+    ip_address: Annotated[IPvAnyAddress, Field(description="IP address")]
+    
+    # Numeric constraints using specialized types
+    age: Annotated[PositiveInt, Field(description="User age")]
+    rating: Annotated[float, Field(ge=0, le=5, description="User rating")]
+    price: Annotated[
+        Decimal,
+        Field(max_digits=10, decimal_places=2, description="Product price"),
+    ]
+    
+    # Time handling
+    created_at: Annotated[datetime, Field(default_factory=datetime.utcnow)]
+    date_only: Annotated[date, Field(default_factory=date.today)]
+    duration: Annotated[timedelta, Field(default=timedelta(days=1))]
+
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        validate_assignment=True,
+    )
+```
+
+### 01.02 Extra Types
+```python
+from __future__ import annotations
+
+from typing import Annotated
+
+from pydantic import BaseModel, Field
+from pydantic_extra_types.color import Color
+from pydantic_extra_types.coordinate import Coordinate
+from pydantic_extra_types.country import Country
+from pydantic_extra_types.mac_address import MacAddress
+from pydantic_extra_types.phone_numbers import PhoneNumber
+
+class AdvancedExample(BaseModel):
+    """Example using pydantic-extra-types with Annotated syntax."""
+    
+    color: Annotated[Color, Field(description="Color in any format")]
+    country: Annotated[Country, Field(description="ISO country code")]
+    phone: Annotated[PhoneNumber, Field(description="Phone number with validation")]
+    location: Annotated[Coordinate, Field(description="Geographical coordinate")]
+    device_mac: Annotated[MacAddress, Field(description="Device MAC address")]
+```
+
+## 02 Configuration and Aliases
+
+### 02.00 Field Aliases
+```python
+from __future__ import annotations
+
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field
+
+class AliasExample(BaseModel):
+    """Example of field aliases with Annotated syntax."""
+    
+    # Simple alias for different JSON key
+    user_id: Annotated[int, Field(alias="userId", description="User ID")]
+    
+    # Validation alias for input processing
+    email_address: Annotated[
+        str,
+        Field(
+            validation_alias="emailAddress",
+            serialization_alias="email",
+            description="Email address",
+        ),
+    ]
+    
+    # Complex validation alias
+    nested_field: Annotated[
+        str,
+        Field(validation_alias=["data", "nested", "field"], description="Nested field"),
+    ]
+
+    model_config = ConfigDict(
+        # Global alias generator (e.g., camelCase conversion)
+        alias_generator=lambda string: "".join(
+            word.capitalize() if i else word
+            for i, word in enumerate(string.split("_"))
+        ),
+    )
+```
+
+## 03 Serialization
+
+### 03.00 Basic Serialization
+```python
+from __future__ import annotations
+
+from typing import Annotated
+
+from pydantic import BaseModel, Field
+
+class SerializationExample(BaseModel):
+    """Example of basic serialization with Annotated syntax."""
+    
+    name: Annotated[str, Field(description="User name")]
+    age: Annotated[int, Field(description="User age")]
+    metadata: Annotated[dict[str, str], Field(default_factory=dict)]
+
+    # DON'T: Create custom serialization methods
+    def to_json(self) -> str:
+        return json.dumps(self.dict())  # Wrong - dict() is deprecated
+
+    # DO: Use built-in methods
+    data = model.model_dump()  # Python dict
+    json_data = model.model_dump_json()  # JSON string
+    
+    # With options
+    filtered = model.model_dump(
+        include={'name', 'age'},
+        exclude_none=True,
+        mode='json',
+    )
+```
+
+### 03.01 Custom Serialization
+```python
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+from typing import Annotated, Any
+
+from pydantic import BaseModel, ConfigDict, Field, field_serializer, model_serializer
+
+class CustomSerializationExample(BaseModel):
+    """Example of custom serialization with Annotated syntax."""
+    
+    dt: Annotated[datetime, Field(description="Timestamp")]
+    diff: Annotated[timedelta, Field(description="Time difference")]
+    
+    model_config = ConfigDict(
+        ser_json_timedelta='iso8601',  # Configure timedelta serialization
+    )
+
+    # Field-level serialization
+    @field_serializer('dt')
+    def serialize_dt(self, dt: datetime, _info) -> float:
+        return dt.timestamp()
+
+    # Model-level serialization
+    @model_serializer
+    def serialize_model(self) -> dict[str, Any]:
+        return {
+            'dt': self.dt.isoformat(),
+            'diff': str(self.diff),
+        }
+```
+
+## 04 Anti-Patterns
+
+### 04.00 Field Design
+```python
+from __future__ import annotations
+
+from typing import Annotated
+
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
+
+# DON'T: Use custom regex when built-in type exists
+class BadExample(BaseModel):
+    email: str = Field(pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    url: str = Field(pattern=r'^https?://.+')
+
+# DON'T: Use old-style Field syntax
+class OldStyleExample(BaseModel):
+    email: EmailStr = Field(description="User email")
+    url: HttpUrl = Field(description="Website URL")
+    
+# DO: Use built-in types with Annotated syntax
+class GoodExample(BaseModel):
+    email: Annotated[EmailStr, Field(description="User email")]
+    url: Annotated[HttpUrl, Field(description="Website URL")]
+```
+
+### 04.01 Model Design
+- DON'T use inheritance for model variations; use composition
+- DON'T create deeply nested models (>3 levels)
+- DON'T use dynamic field names
+- DON'T mix business logic with validation logic
+- DON'T create methods when fields can represent the data
+- DON'T override built-in methods unless absolutely necessary
+- DON'T use `Any` type unless absolutely necessary
+
+### 04.02 Performance
+- DON'T use validators for simple type coercion
+- DON'T validate the same data multiple times
+- DON'T store large binary data in models
+- DON'T use dynamic model creation unless necessary
+- DON'T use `model_dump()` in tight loops

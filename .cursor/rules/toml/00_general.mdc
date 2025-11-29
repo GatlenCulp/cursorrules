@@ -1,5 +1,5 @@
 ---
-description: 
+description: How to write proper TOML
 globs: *.toml
 alwaysApply: false
 ---
