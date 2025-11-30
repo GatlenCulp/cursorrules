@@ -1,0 +1,48 @@
+{
+	"$schema": "https://unpkg.com/cursor-hooks/schema/hooks.schema.json",
+	"version": 1,
+	"hooks": {
+		"beforeShellExecution": [
+			{
+				"command": "jq '.' >> /tmp/agent-audit.jsonl && exit 0"
+			},
+			{
+				"command": "jq -n --arg wd \"$(pwd)\" '{wd: $wd}' >> /tmp/agent-audit.jsonl && exit 0"
+			},
+			{
+				"command": ".cursor/hooks/audit.sh"
+			},
+			{
+				"command": ".cursor/hooks/block-git.sh"
+			}
+		],
+		"beforeMCPExecution": [
+			{
+				"command": ".cursor/hooks/audit.sh"
+			}
+		],
+		"beforeReadFile": [
+			{
+				"command": ".cursor/hooks/redact-secrets.sh"
+			}
+		],
+		"afterFileEdit": [
+			{
+				"command": ".cursor/hooks/audit.sh"
+			},
+			{
+				"command": ".cursor/hooks/format.sh"
+			}
+		],
+		"beforeSubmitPrompt": [
+			{
+				"command": ".cursor/hooks/audit.sh"
+			}
+		],
+		"stop": [
+			{
+				"command": ".cursor/hooks/audit.sh"
+			}
+		]
+	}
+}

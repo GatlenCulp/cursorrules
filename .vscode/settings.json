@@ -1,0 +1,17 @@
+{
+	"files.exclude": {
+		"**/.git": false,
+		"**/.svn": false,
+		"**/.hg": false,
+		"**/.DS_Store": false,
+		"**/Thumbs.db": false,
+		"**/CVS": false,
+		"**/.ruby-lsp": false,
+		"**/.trunk/*actions/": false,
+		"**/.trunk/*logs/": false,
+		"**/.trunk/*notifications/": false,
+		"**/.trunk/*out/": false,
+		"**/.trunk/*plugins/": false
+	},
+	"explorerExclude.backup": {}
+}

@@ -1,0 +1,11 @@
+{
+	"conversation_id": "faf02d9a-860e-4243-b7c4-c5550e986fd2",
+	"generation_id": "0386523f-7234-4b7e-af0a-8554c649808d",
+	"model": "claude-4.5-sonnet",
+	"command": "ls",
+	"cwd": "",
+	"hook_event_name": "beforeShellExecution",
+	"cursor_version": "2.1.39",
+	"workspace_roots": ["/Users/gat/personal/cursorrules"],
+	"user_email": "gatlenculp@gmail.com"
+}

@@ -25,15 +25,23 @@ _Note: To check whether these are added, check Cursor Settings._
 
 ## `./commands/`
 
-A collection of commands accessible using `/<command-name>` in the cursor dialogue. Similar to manually-added cursor rules.
+_Partial Credit: https://github.com/hamzafer/cursor-commands_
 
+A collection of commands accessible using `/<command-name>` in the cursor dialogue. Similar to manually-added cursor rules.
 
 ## `./mcp/`
 
 TODO
 
-## `./hooks/`
+## [`./hooks.json` and `./hooks/`](https://cursor.com/docs/agent/hooks)
 
+I would follow this README for more info on hooks: https://github.com/hamzafer/cursor-hooks/tree/main
+Or this tutorial: https://egghead.io/simplify-cursor-hooks-configuration-with-json-schema~cqtlr
+
+Note that while Cursor claims that scripts are relative to the hooks.json file, this is not true :/
+
+TODO: Connect with githooks / pre-commit
+_Partial Credit: https://github.com/hamzafer/cursor-hooks_
 
 ## Custom
 

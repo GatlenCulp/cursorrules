@@ -1,0 +1,16 @@
+{
+	"conversation_id": "test-conversation-id",
+	"generation_id": "test-generation-id",
+	"model": "claude-4.5-sonnet",
+	"file_path": "/Users/gat/personal/cursorrules/README.md",
+	"edits": [
+		{
+			"old_string": "# Old content",
+			"new_string": "# New content"
+		}
+	],
+	"hook_event_name": "afterFileEdit",
+	"cursor_version": "2.1.39",
+	"workspace_roots": ["/Users/gat/personal/cursorrules"],
+	"user_email": "test@example.com"
+}
