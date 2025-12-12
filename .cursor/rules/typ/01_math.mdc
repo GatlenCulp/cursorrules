@@ -1,25 +1,57 @@
 ---
 globs: *.typ
-description: Instructions for how to properly write math
+description: Instructions for how to properly write math in Typst
 alwaysApply: false
 ---
-- I'm using the Typst package `physica` for extra utilities. 
-- Use semantic symbols/variables instead of generic ones (e.g. `grad` not `nabla`, `product` not `Pi`, `evaluated(dot)_(x=0)` not `dot |_(x=0)`, `iprod(x, y)` not `angle.l x, y angle.r`, `norm(dot)` not `||dot||`, `abs(dot)` not `|dot|`, `Set(dot)` not `{dot}`, etc.), but use `oo` instead of `infinity`. Use `dd(x)` for differentials. Use `dv(f,x)` or `pdv(f,x)` for derivatives and partial derivatives respectively.
-- Use `vb(x)` for vector bold, `cal(A)` for mathcal letters, etc. 
-- Beware of using {sub, super}scripts with functions, be sure to place spaces: `V_pi (s)` not `V_pi(s)`.
-- Disambiguate `=` -- use `<-` for assignment, `:=` for definition, `=` for booleans.
-- Disambiguate `in` -- use `:in` for definition, `in` for booleans
-- For probability use `Pr(x | y)`, `Ex(x | y)`, and `"Var"(X)`
-- Prefer interval notation (`p in [0, 1]`) over inequalities (`0 <= p <= 1`) where appropriate.
-- For every generated figure, header, equation, table, etc. add a label with the proper prefix: `<sec:name>`, `<fig:name>`, `<eq:name>`, `<tab:name>`, etc.
-- When referencing labeled items in text, use `@sec:name`, `@fig:name`, `@eq:name`, etc.
+
+## 1. Physica Package and Math Notation Preferences
+
+This project uses the Typst `physica` package for enhanced math utilities.
+
+**Semantic Symbols**
+Use semantic notation instead of generic symbols:
+- Operators: `grad` not `nabla`, `product` not `Pi`
+- Evaluation: `evaluated(dot)_(x=0)` not `dot |_(x=0)`
+- Inner products: `iprod(x, y)` not `angle.l x, y angle.r`
+- Norms and absolute values: `norm(dot)` not `||dot||`, `abs(dot)` not `|dot|`
+- Sets: `Set(dot)` not `{dot}`
+- Exception: Use `oo` instead of `infinity`
+
+**Calculus Notation**
+- Differentials: `dd(x)`
+- Derivatives: `dv(f,x)` for total derivatives
+- Partial derivatives: `pdv(f,x)`
+
+**Operators and Syntax**
+- Disambiguate equals: `<-` for assignment, `:=` for definition, `=` for boolean equality
+- Disambiguate membership: `:in` for definition, `in` for boolean membership
+- Function subscripts/superscripts: Always include space before parentheses: `V_pi (s)` not `V_pi(s)`
+- Prefer interval notation where appropriate: `p in [0, 1]` over `0 <= p <= 1`
+
+**Typography**
+- Vector bold: `vb(x)`
+- Mathcal letters: `cal(A)`
 
 // TODO: [typst-template] Standardize RV notation in my notes. Distributed according to, RV, domain, etc.
 // TODO: [typst-template] Add my notes from my prompt templates such as with capitalizations and styles.
 // TODO: [typst-template] Parameter assignment operator in functions (e.g. $f(x=x_0)$)
 
+## 2. Other Typst Preferences
 
-Make efforts to make the math source code more readable with line breaks and indents as you would do with syntax for another language. For showing work with short equations, use `&` for alignment, for longer ones where line breaks are necessary within an expression, omit the alignment character and place an extra line break between equations. Use `=` (equals) to update an expression and `=>` (implies) to update an equation. Example of a long one:
+**Labels and References**
+- Add labels with proper prefixes to all generated items: `<sec:name>`, `<fig:name>`, `<eq:name>`, `<tab:name>`, etc.
+- Reference labeled items in text using: `@sec:name`, `@fig:name`, `@eq:name`, etc.
+
+## 3. How to Show Work in Typst
+
+Make math source code readable with line breaks and indentation, treating it like syntax in any other language.
+
+**For short equations:** Use `&` for alignment
+
+**For longer derivations:** If equations are long, omit alignment characters. For long derivations add extra line breaks between equations. Use `=` to update an expression and `=>` to update an equation.
+
+**Example:**
+
 ```typst
 Solving:
 $
@@ -54,13 +86,37 @@ $
 $
 ```
 
-Common typst mistakes: Typst is NOT LaTeX.
-- don't use `begin` or `end` environments.
-- `\` and a space or new line registers as a new line in typst. Don't use `\\` as that just escapes a back slash.
-- There is no need to use `\` in typst math. E.g. `abs` not `\abs`, `alpha` not `\alpha`, `Delta` not `\Delta`, `quad` not `\quad`, etc.
-- In typst, `{}` is not used group symbols the way it is in LaTeX. Instead `()` are used. E.g. `x_(i j)` not `x_{ij}` (a space must be included otherwise `ij` will try to reference a math symbol that doesn't exist.)
-- Unless its either 1-character, a number, or a function/symbol in typst there must be double quotes. E.g. `f_ext` will not work because `ext` is not a typst symbol. Instead use `f_"ext"` As another example: `$J_(reflected) := N^2 J_(load)$, $b_(reflected) := N^2 b_(load)$` will not work because "reflected" and "load" are not math symbols, instead use `$J_"reflected" := N^2 J_"load"$, $b_"reflected" := N^2 b_"load"$`
-- For text in an equation, use `"my text here"` instead of `\text{my text here}`. For example: use ` d_"min" (q)` not `$ d_\text{min}(q) $`
-- Don't use `\,` or `\;` for spacing, only `quad`. Typst does a good job of automatic spacing. Similarly don't use `\big` or related commands -- typst automatically handles sizing.
-- For monogram notation specifically, please use `attach`, e.g. `attach(p, tl: C, tr: s_i)`. (Don't use the LaTeX `{}^W X^C` syntax)
-- To make block math, make sure there is white space between the `$` and the math (line break or space). For example: `$ attach(X, tl: A, tr: B) $` is a block but `$attach(X, tl: A, tr: B)$` is inline.
+## 4. Common Typst/LaTeX Mistakes
+
+**Remember: Typst is NOT LaTeX**
+
+**Environments**
+- Don't use `begin` or `end` environments
+
+**Line Breaks**
+- `\` followed by a space or newline creates a line break in Typst
+- Don't use `\\` (that just escapes a backslash)
+
+**Command Syntax**
+- No backslash prefix needed: `abs` not `\abs`, `alpha` not `\alpha`, `Delta` not `\Delta`, `quad` not `\quad`
+
+**Grouping**
+- Use `()` not `{}` for grouping: `x_(i j)` not `x_{ij}`
+- Note: Include spaces in multi-character subscripts (`i j`) to prevent Typst from looking for a nonexistent `ij` symbol
+
+**Text in Math Mode**
+- Multi-character text requires quotes: `f_"ext"` not `f_ext`
+- Example: `J_"reflected" := N^2 J_"load"` not `J_(reflected) := N^2 J_(load)`
+- Use `"my text"` not `\text{my text}`: `d_"min" (q)` not `d_\text{min}(q)`
+
+**Spacing and Sizing**
+- Don't use `\,` or `\;` for spacing—Typst handles spacing automatically
+- Use `quad` when manual spacing is needed
+- Don't use `\big`, `\Big`, etc.—Typst automatically sizes delimiters
+
+**Special Notation**
+- Monogram notation: Use `attach(p, tl: C, tr: s_i)` not LaTeX's `{}^C p^(s_i)` syntax
+
+**Block vs Inline Math**
+- Block math requires whitespace between `$` and content: `$ f(x) $` is block
+- Inline math has no whitespace: `$f(x)$` is inline

@@ -21,6 +21,10 @@ Context that is applied either (A) automatically, (B) when an opened/referenced 
 - `cursor`: Info and preferences about cursor itself (e.g. how to use cursor to write cursor rules)
 - `misc`: Self explanatory
 
+Unfortunately there is not a good way to add these cursor rules to your general user profile as of 2025-11-29
+
+TODO: Utilize the ability to reference rules or files within rules themselves.
+
 _Note: To check whether these are added, check Cursor Settings._
 
 ## `./commands/`
@@ -29,18 +33,21 @@ _Partial Credit: https://github.com/hamzafer/cursor-commands_
 
 A collection of commands accessible using `/<command-name>` in the cursor dialogue. Similar to manually-added cursor rules.
 
-## `./mcp/`
+## `./mcp/` Model Context Protocol (MCP)
 
-TODO
+TODO: Define my personal nix MCPs. Then get Cursor to use them.
+
+GOTem recommends using [ComposeIO](https://mcp.composio.dev/). These make adding tools to your model extremely easy.
 
 ## [`./hooks.json` and `./hooks/`](https://cursor.com/docs/agent/hooks)
+
+TODO: Connect with githooks / pre-commit
 
 I would follow this README for more info on hooks: https://github.com/hamzafer/cursor-hooks/tree/main
 Or this tutorial: https://egghead.io/simplify-cursor-hooks-configuration-with-json-schema~cqtlr
 
 Note that while Cursor claims that scripts are relative to the hooks.json file, this is not true :/
 
-TODO: Connect with githooks / pre-commit
 _Partial Credit: https://github.com/hamzafer/cursor-hooks_
 
 ## Custom
@@ -48,9 +55,3 @@ _Partial Credit: https://github.com/hamzafer/cursor-hooks_
 - `artifacts` -- Similar to Claude artifacts, these are temporary files (typically markdown) created and updated by LLMs where the chat interface is not enough. Managed by `rules/use-artifacts.mdc`
 - `mem` -- Memory bank for LLMs to update a knowledge base of your repository. Currently not functioning. Managed by `rules/use-memory.mdc`
 - `notes` -- Agentic note taking system. This is described in `commands/write/take-notes.md`
-
-## Model Context Protocol (MCP)
-
-GOTem recommends using [ComposeIO](https://mcp.composio.dev/). These make adding tools to your model extremely easy.
-
-https://github.com/hamzafer/cursor-commands

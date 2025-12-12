@@ -1,5 +1,3 @@
-
-
 # PSet PDF to Typst
 
 Please convert this problem set PDF into a typst code block. Keep the content verbatum. Do not solve, just write empty `#solution[ TODO ]` and `#question(status: "todo")[...]` for each. Event if there is no title in the original PDF, give a title based on the content of the question or what it is trying to show. You don't need to add "Part" labels.

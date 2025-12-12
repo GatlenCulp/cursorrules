@@ -37,6 +37,16 @@ Display: \[ F = \{f_1, f_2, \ldots, f_m\} \]
 - Use proper KaTeX commands (`\ldots` instead of `...`)
 - Include appropriate braces for multi-character subscripts: ( x\_{ij} ) not ( x_ij )
 
+```markdown
+P(Y|X=x) or F = {f₁, f₂, ..., fₘ}
+```
+
+Correct:
+
+```markdown
+\( P(Y \mid X=x) \) or \[ F = \{f_1, f_2, \ldots, f_m\} \]
+```
+
 ## 03 Probability Notation
 
 Use proper probability notation:
@@ -57,18 +67,4 @@ Use proper probability notation:
 - Summations: \( \sum_{i=1}^n x_i \)
 - Products: \( \prod_{i=1}^n x_i \)
 - Integrals: \( \int f(x) dx \) or \( \int_a^b f(x) dx \)
-```
-
-## 05 Examples
-
-Incorrect:
-
-```markdown
-P(Y|X=x) or F = {f₁, f₂, ..., fₘ}
-```
-
-Correct:
-
-```markdown
-\( P(Y \mid X=x) \) or \[ F = \{f_1, f_2, \ldots, f_m\} \]
 ```

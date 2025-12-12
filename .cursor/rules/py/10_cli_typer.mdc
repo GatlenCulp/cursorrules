@@ -35,7 +35,7 @@ Define with `Annotated` from `typing`:
 
 ```python
 ComposeFileOption = Annotated[
-    Optional[Path],
+    Path | None,
     typer.Option(
         "--compose",
         help="The gatpack compose file to use for templating operations.",
@@ -49,6 +49,26 @@ ComposeFileOption = Annotated[
 ```
 
 Define options at module top level or import from dedicated options module - not within function definitions.
+
+Note that with the annotated pattern you cannot use the default parameter. Instead you must do
+
+```python
+UsernameOption = Annotated[
+    str,
+    typer.Option(
+        "--username"
+        # default="gculp" # WRONG!!!
+    )
+]
+
+@app.command()
+def create(
+    username : UsernameOption = "gculp" # CORRECT!!!
+) -> None:
+    pass
+```
+
+<!-- TODO: Maybe add some comments about the typdantic library thing. -->
 
 ### Option/Argument Settings
 
@@ -74,7 +94,7 @@ app = typer.Typer(rich_markup_mode="markdown")
 @app.command()
 def create(
     username: Annotated[str, typer.Argument(help="The username to be **created**")],
-):
+) -> None:
     """
     **Create** a new *shinny* user. :sparkles:
 

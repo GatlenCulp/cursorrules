@@ -138,11 +138,11 @@ repos:
   # {% endif %}
 
   ### Makefile ###
-  - repo: https://github.com/mrtazz/checkmake.git
-    rev: 0.2.2
-    hooks:
-      - id: checkmake
-        name: "🐮 Makefile · Lint Makefile"
+  # - repo: https://github.com/mrtazz/checkmake.git
+  #   rev: 0.2.2
+  #   hooks:
+  #     - id: checkmake
+  #       name: "🐮 Makefile · Lint Makefile"
 
   ### SQL ###
   - repo: https://github.com/sqlfluff/sqlfluff

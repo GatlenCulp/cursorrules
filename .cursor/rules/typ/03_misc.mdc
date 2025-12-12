@@ -1,0 +1,25 @@
+---
+globs: *.typ
+description: Misc Typst rules
+alwaysApply: false
+---
+
+## Footnotes
+
+1. Footnotes should always start on their own line if they're long.
+2. Footnotes should never be at the end of a block equation, they create a new line break. Move them to be on a new line after a regular paragraph.
+  Bad:
+  ```typst
+  A line can be described as:
+  $
+    y = m x + b
+  $ #footnote[Slope-intercept form]
+  ``` 
+  Good:
+  ```typst
+  A line can be described as: #footnote[Slope-intercept form]
+  $
+    y = m x + b
+  $
+  ```
+

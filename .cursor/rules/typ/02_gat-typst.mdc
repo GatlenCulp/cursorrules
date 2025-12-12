@@ -1,0 +1,168 @@
+---
+globs: *.typ
+description: Guidelines for using the gat-typst package and its behavior modifications
+alwaysApply: false
+---
+
+## About gat-typst
+
+The `gat-typst` package is a comprehensive template system for academic writing with a focus on mathematics-heavy homework assignments, cheatsheets, and technical documents. It provides opinionated defaults, extensive math utilities, and integrates 20+ carefully selected packages.
+
+Import: `#import "@local/gat-typst:0.1.0": *`
+
+## All Imports
+
+```typ
+// === Diagramming ===
+#import "@preview/cetz:0.4.2": canvas, draw
+#import "@preview/cetz-plot:0.1.2": plot
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
+#import "@preview/lilaq:0.5.0" as lq
+
+// === Math ===
+#import "@preview/matset:0.1.0"
+#import "@preview/equate:0.3.2": equate
+#import "@preview/physica:0.9.5": *
+#import "@preview/quick-maths:0.2.1": shorthands
+#import "@preview/mannot:0.3.0": *
+
+// === Code ===
+#import "@preview/callisto:0.2.4"
+#import "@preview/lovelace:0.3.0": pseudocode-list
+#import "@preview/codly:1.3.0": *
+#import "@preview/codly-languages:0.1.1": codly-languages
+#import "@preview/cmarker:0.1.6"
+
+// === Display & Formatting ===
+#import "@preview/frame-it:1.2.0": *
+#import "@preview/fontawesome:0.6.0": *
+#import "@preview/showybox:2.0.4": showybox
+#import "@preview/hydra:0.6.2": hydra
+#import "@preview/booktabs:0.0.4": *
+
+// === Compatibility ===
+#import "@preview/mitex:0.2.5": mitex, mitex-convert, mitext
+
+// === Color ===
+#import "@preview/splash:0.5.0": xcolor
+#import "@preview/typpuccino:0.1.0": frappe, latte, macchiato, mocha
+```
+
+## Critical Behavior Changes
+
+When using this package, be aware of several automatic modifications to default Typst behavior.
+
+### Math Shorthands (via quick-maths)
+
+The package enables extensive operator shorthands that are **automatically active** in all templates:
+
+**Most Impactful Change - Asterisk Operator:**
+- `$a * b$` → renders as `a · b` (centered dot)
+- `$a ** b$` → renders as small asterisk
+- `$a ast b$` → literal asterisk (fallback)
+
+This follows linear algebra and physics conventions but may be surprising.
+
+**Other Key Shorthands:**
+- `$a +- b$` → plus-minus
+- `$a .. b$` → spacing (quad)
+- `$A :. B$` → therefore (∴)
+- `$A :' B$` → because (∵)
+- `$a ~~ b$` → approximately
+- `$<< a, b >>$` → angle brackets
+- `$a o+ b$` → circled plus
+- `$a o. b$` or `$a @ b$` → circled dot
+
+**Relations:**
+- `$a -< b$`, `$a -<= b$` → precedes, precedes or equals
+- `$a >- b$`, `$a >-= b$` → succeeds, succeeds or equals
+- `$a -= b$` → equivalent
+- `$a ~= b$` → asymptotically equal
+
+**Note:** Currently shorthands cannot be disabled (parameter exists but not functional).
+
+### Superscript Transformations
+
+Three automatic superscript transformations:
+
+1. **Transpose:** `$A^T$` → renders with proper transpose symbol (ᵀ)
+2. **Dagger:** `$A^+$` → renders as dagger (†) for pseudoinverse/Hermitian transpose
+3. **Star:** `$V^*$` → renders with star symbol (⋆) for optimal values
+
+These work correctly with shorthands: `$A^T * B^*$` properly renders transpose A times optimal B.
+
+## Math Utilities
+
+### Statistics Functions
+
+Colored, bracketed notation (blue with square brackets):
+- `$Ex(X)$` → expected value
+- `$Var(X)$` → variance
+- `$Cov(X, Y)$` → covariance
+- `$Corr(X, Y)$` → correlation
+- `$Pr(X > 0)$` → probability
+
+Example: `$Ex(X^2) >= (Ex(X))^2$` by Jensen's inequality.
+
+### Reasoning Operators
+
+- `$x st x > 0$` → "such that"
+- `$If x > 0 Then y = 1 Else y = 0$` → conditional expressions
+
+### Machine Learning / RL
+
+- `$KL(p, q)$` → KL divergence
+- `$refPol$` → reference policy
+
+### Miscellaneous
+
+- `$SE$` → standard error
+- `$ddot$` → double dot
+- `$alias$` → alias arrow
+- `$clamp(x)$` → clamp function
+- `$solve(x)$` → solve function
+
+### Custom Math Functions
+
+Create custom math functions with `math-func()`:
+
+```typ
+#let myFunc = math-func("myFunc", delim: "[")
+$myFunc(x, y)$  // Renders as: myFunc[x, y]
+
+// Custom left/right delimiters
+#let norm = math-func("norm", ldelim: math.bar.v.double, rdelim: math.bar.v.double)
+$norm(x)$  // Renders as: ‖x‖
+```
+
+## Box Utilities
+
+### gatbox()
+
+Customizable colored boxes with automatic color cycling.
+
+**Basic usage:**
+```typ
+#gatbox[Default black box]
+#gatbox(color: blue)[Blue box]
+```
+
+**Color cycling:**
+```typ
+#gatbox(color-cycle: true)[First - blue]
+#gatbox(color-cycle: true)[Second - red]
+#gatbox(color-cycle: true)[Third - green]
+// Continues through: orange, purple, then repeats
+```
+
+**Parameters:**
+- `color` (color, default: `black`): Box color
+- `color-cycle` (boolean, default: `false`): Auto-cycle through predefined colors
+- `title` (content): Optional title
+- All `showybox` parameters supported
+
+**With title:**
+```typ
+#gatbox(title: "Important", color: red)[Critical point!]
+#gatbox(color-cycle: true, title: "Theorem 1")[Content here]
+```
